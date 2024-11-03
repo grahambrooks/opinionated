@@ -1,0 +1,57 @@
+extends:
+  - "spectral:oas"
+  - "spectral:asyncapi"
+  - "spectral:arazzo"
+  - "@stoplight/spectral-owasp-ruleset"
+rules:
+  paths-kebab-case:
+    description: Paths should be kebab-case.
+    message: "{{property}} should be kebab-case (lower-case and separated with hyphens)"
+    severity: warn
+    given: $.paths[*]~
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(\/|[a-z0-9]+(-[a-z0-9]+)*|{[a-zA-Z0-9_]+(-[a-z0-9]+)*})+$"
+  parameters-kebab-case:
+    description: Parameters should be kebab-case.
+    message: "Parameter '{{property}}' should be kebab-case (lower-case and separated with hyphens)"
+    severity: error
+    given: "$.paths[*][*].parameters[*].name"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9]+(-[a-z0-9]+)*$"
+  json-keys-kebab-case:
+    description: JSON keys should be kebab-case.
+    message: "{{property}} should be kebab-case (lower-case and separated with hyphens)"
+    severity: info
+    given: "$.components.schemas[*].properties"
+    then:
+      field: "@key"
+      function: pattern
+      functionOptions:
+        match: "^(\/|[a-z0-9]+(-[a-z0-9]+)*|{[a-zA-Z0-9]+})+$"
+  path-should-have-examples:
+    description: Each path should have at least one example.
+    message: "Path {{path}} should have at least one example."
+    severity: error
+    given: "$.paths[*]..content[*]"
+    then:
+      - field: "examples"
+        function: truthy
+
+  request-content-should-have-examples:
+    description: Each path should have at least one example.
+    message: "Path {{path}} should have at least one example."
+    severity: warn
+    given: "$.paths[*][*].requestBody[*].content[*]..examples"
+    then:
+      function: truthy
+  response-content-should-have-examples:
+    description: Each path should have at least one example.
+    message: "Path {{path}} should have at least one example."
+    severity: warn
+    given: "$.paths[*][*].responses[*].content[*].examples"
+    then:
+      function: truthy
