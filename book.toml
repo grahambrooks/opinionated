@@ -1,0 +1,6 @@
+[book]
+authors = ["Graham Brooks"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Opinionated"

@@ -1,4 +1,5 @@
-# Opinionated OpenAPI Ruleset
+# APIs
+
 
 A comprehensive collection of OpenAPI (Swagger) linting rules designed to enforce consistent API design practices. This repository provides multiple rulesets that can be used individually or combined to ensure your OpenAPI specifications follow best practices, maintain consistency, and adhere to security guidelines.
 
