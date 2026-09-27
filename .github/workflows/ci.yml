@@ -21,7 +21,18 @@ jobs:
       # Don't hand-roll the download: the `releases/latest/download/` path only
       # serves assets of whatever the current tag is, so a version-stamped
       # filename 404s and tar chokes on the HTML error page.
-      - uses: peaceiris/actions-mdbook@v2
+      # Pinned to the 0.4 line: 0.5 rejects keys existing books still carry
+      # (`multilingual = false` -> "TOML parse error"), so "latest" fails the
+      # gate on an mdbook release rather than on a dependency bump.
+      - uses: taiki-e/install-action@v2
         with:
-          mdbook-version: latest
+          tool: mdbook@0.4,cargo-binstall
+      # Preprocessors are separate binaries; a book that names one cannot build
+      # without it.
+      - name: Install preprocessors named in book.toml
+        run: |
+          for p in $(grep -oE 'command *= *"mdbook-[a-z0-9-]+"' book.toml \
+                       | grep -oE 'mdbook-[a-z0-9-]+' | sort -u); do
+            cargo binstall -y "$p"
+          done
       - run: mdbook build
